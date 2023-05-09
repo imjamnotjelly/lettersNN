@@ -5,6 +5,7 @@ import os
 import random
 import quick_styles as qs
 from PIL import Image
+import matplotlib.pyplot as plt
 
 listOfImages = os.listdir("newData")
 listOfLetters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
@@ -23,6 +24,9 @@ def get_letter_activation(path: str) -> list:
     gv = (gv-np.min(gv))/(np.max(gv)-np.min(gv))
     gv = [round(xs,2) for xs in gv]
     return gv
+
+def emnist_activation(img: np.array) -> list:
+    img = img.tolist()
 
 def confirm_output(output: np.array, letter: str) -> bool:
     output = output[0].tolist()
@@ -123,4 +127,10 @@ results_fraction = f"{len(images)-len(incorrect_letters)}/{len(images)}"
 qs.defaults.values["color"] = "blue"
 qs.xprint(f"Correct Guesses: {results_fraction} | {round(eval(results_fraction)*100)}%")
 qs.xprint(f"Incorrect Guesses (intended : assumed): {incorrect_letters}")
+plt.plot(clf.loss_curve_)
+os.chdir("../results")
+plt.title("Loss")
+plt.xlabel("Iteration")
+plt.ylabel("Value")
+plt.savefig("loss.png")
 # """
