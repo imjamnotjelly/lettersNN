@@ -56,9 +56,7 @@ for f in listOfImages:
     
 
 
-X = input_vectors_list
-X = np.nan_to_num(X)
-y = targets_list
+input_vectors_list = np.nan_to_num(input_vectors_list)
 
 clf = MLPClassifier(hidden_layer_sizes=(100,), 
                     activation='relu', 
@@ -83,7 +81,7 @@ clf = MLPClassifier(hidden_layer_sizes=(100,),
                     n_iter_no_change=10, 
                     max_fun=15000)
 
-clf.fit(X, y)
+clf.fit(input_vectors_list, targets_list)
 
 # Testing procedure
 
