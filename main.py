@@ -25,9 +25,6 @@ def get_letter_activation(path: str) -> list:
     gv = [round(xs,2) for xs in gv]
     return gv
 
-def emnist_activation(img: np.array) -> list:
-    img = img.tolist()
-
 def confirm_output(output: np.array, letter: str) -> bool:
     output = output[0].tolist()
     assumed_letter = listOfLetters[output[:-1].index(1)].lower()
