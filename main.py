@@ -1,3 +1,4 @@
+# warning: very disorganized!
 from sklearn.neural_network import MLPClassifier
 import numpy as np
 
@@ -7,16 +8,19 @@ import quick_styles as qs
 from PIL import Image
 import matplotlib.pyplot as plt
 
+# constants
 listOfImages = os.listdir("newData")
 listOfLetters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 os.chdir("newData")
 
 random.shuffle(listOfImages)
 
+# basic avg func
 def mean(values: int) -> float:
     x = sum(values)/len(values)
     return x
 
+# extracts and normalizes rgb data given an img path
 def get_letter_activation(path: str) -> list:
     img = Image.open(path)
     
@@ -25,13 +29,15 @@ def get_letter_activation(path: str) -> list:
     gv = [round(xs,2) for xs in gv]
     return gv
 
+# compares prediction activations with a given letter
 def confirm_output(output: np.array, letter: str) -> bool:
     output = output[0].tolist()
     assumed_letter = listOfLetters[output[:-1].index(1)]
     if output[-1]:
         assumed_letter = assumed_letter.upper()
     return [assumed_letter, assumed_letter == letter]
-    
+
+# extracts letter given an img path name    
 def path_to_letter(path: str) -> str:
     return path[4].upper() if "cap-" in path else path[4]
 
@@ -39,14 +45,12 @@ def path_to_letter(path: str) -> str:
 input_vectors_list = []
 targets_list = []
 
-
+# generates activations and corresponding targets for each training img
 for f in listOfImages:
     input_vectors_list.append(get_letter_activation(f))
     df = [0]*27
     
     letter = path_to_letter(f)
-
-    
     
     if letter.isupper():
         df[-1] = 1
@@ -58,6 +62,7 @@ for f in listOfImages:
 
 input_vectors_list = np.nan_to_num(input_vectors_list)
 
+# initializes network
 clf = MLPClassifier(hidden_layer_sizes=(100,), 
                     activation='relu', 
                     solver='adam', 
@@ -83,9 +88,8 @@ clf = MLPClassifier(hidden_layer_sizes=(100,),
 
 clf.fit(input_vectors_list, targets_list)
 
-# Testing procedure
+# testing procedure
 
-# """
 os.chdir("../testing")
 images = sorted(os.listdir("."))
 incorrect_letters = {}
@@ -122,10 +126,11 @@ results_fraction = f"{len(images)-len(incorrect_letters)}/{len(images)}"
 qs.defaults.values["color"] = "blue"
 qs.xprint(f"Correct Guesses: {results_fraction} | {round(eval(results_fraction)*100)}%")
 qs.xprint(f"Incorrect Guesses (intended : assumed): {incorrect_letters}")
+
+# loss graph
 plt.plot(clf.loss_curve_)
 os.chdir("../results")
 plt.title("Loss")
 plt.xlabel("Iteration")
 plt.ylabel("Value")
 plt.savefig("loss.png")
-# """
